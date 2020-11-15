@@ -48,13 +48,13 @@ public class SignUpChoose {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JLabel lblTitle = new JLabel("You are a doctor or patient?");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Arial", Font.PLAIN, 24));
-		
+
 		JSeparator separator = new JSeparator();
-		
+
 		JButton btnNewDoctor = new JButton("Doctor");
 		btnNewDoctor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -63,7 +63,7 @@ public class SignUpChoose {
 				frame.setVisible(false);
 			}
 		});
-		
+
 		JButton btnNewPatient = new JButton("Patient");
 		btnNewPatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -72,39 +72,28 @@ public class SignUpChoose {
 				frame.setVisible(false);
 			}
 		});
-		
+
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(separator, GroupLayout.PREFERRED_SIZE, 402, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(35)
-							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(24, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(54)
-					.addComponent(btnNewDoctor)
-					.addPreferredGap(ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
-					.addComponent(btnNewPatient)
-					.addGap(96))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(19)
-					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(71)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnNewDoctor)
-						.addComponent(btnNewPatient))
-					.addContainerGap(83, Short.MAX_VALUE))
-		);
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(separator,
+										GroupLayout.PREFERRED_SIZE, 402, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createSequentialGroup().addGap(35).addComponent(lblTitle,
+										GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(24, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup().addGap(54).addComponent(btnNewDoctor)
+						.addPreferredGap(ComponentPlacement.RELATED, 124, Short.MAX_VALUE).addComponent(btnNewPatient)
+						.addGap(96)));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup().addGap(19)
+						.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(71).addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnNewDoctor).addComponent(btnNewPatient))
+						.addContainerGap(83, Short.MAX_VALUE)));
 		frame.getContentPane().setLayout(groupLayout);
 	}
 }
