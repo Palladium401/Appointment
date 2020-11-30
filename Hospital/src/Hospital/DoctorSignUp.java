@@ -140,7 +140,22 @@ public class DoctorSignUp {
 			public void actionPerformed(ActionEvent arg0) {
 				String password = textPassword.getText();
 				String passwordconfirm = textPasswordCo.getText();
-				if (textDoctorID.getText().equals("") || textDepartment.getText().equals("")
+				
+				DoctorSign doctor = new DoctorSign();
+				boolean result = doctor.signUp(textDoctorID.getText(), textDepartment.getText(), textEmail.getText(), textDoctorName.getText(), password, passwordconfirm);
+				if(result) {
+					LoginPage login = new LoginPage();
+					LoginPage.main(null);
+					frame.setVisible(false);
+				}else {
+					textDoctorName.setText(null);
+					textDepartment.setText(null);
+					textEmail.setText(null);
+					textPassword.setText(null);
+					textPasswordCo.setText(null);
+					textDoctorID.setText(null);
+				}
+				/*if (textDoctorID.getText().equals("") || textDepartment.getText().equals("")
 						|| textEmail.getText().equals("") || textDoctorName.getText().equals("")
 						|| textPassword.getText().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please input all the information", "Try it again",
@@ -149,7 +164,7 @@ public class DoctorSignUp {
 					if (password.equals(passwordconfirm)) {
 						try {
 							Class.forName("com.mysql.jdbc.Driver");
-							con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+							con = DBUtil.getConn();
 							stat = con.createStatement();
 
 							String DoctorID = textDoctorID.getText();
@@ -198,7 +213,7 @@ public class DoctorSignUp {
 						textPasswordCo.setText(null);
 
 					}
-				}
+				}*/
 			}
 		});
 		btnSignUp.setBounds(104, 747, 93, 23);

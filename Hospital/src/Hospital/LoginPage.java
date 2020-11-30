@@ -10,6 +10,9 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
+
+import net.proteanit.sql.DbUtils;
+
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -23,6 +26,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
 import javax.swing.JMenu;
@@ -74,8 +80,8 @@ public class LoginPage {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		JLabel lblLogin = new JLabel("Login");
-		lblLogin.setBounds(149, 27, 321, 35);
+		JLabel lblLogin = new JLabel("Clinic Appointment System--LoginPage");
+		lblLogin.setBounds(33, 27, 609, 35);
 		lblLogin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblLogin.setBackground(SystemColor.inactiveCaption);
 		lblLogin.setFont(lblLogin.getFont().deriveFont(lblLogin.getFont().getSize() + 18f));
@@ -107,6 +113,18 @@ public class LoginPage {
 		UserType.addItem("Doctor");
 		UserType.addItem("Patient");
 
+		/*
+		String test_sql = "SELECT VERSION()";
+		
+		try(Connection c = DBUtil.getConn(); PreparedStatement ps = c.prepareStatement(test_sql)) {
+			ResultSet rs = ps.executeQuery();
+			int result = rs.getRow();
+			System.out.println("Line num: " + result);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		*/
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -114,55 +132,23 @@ public class LoginPage {
 				String username = txtUsername.getText();
 				String type = UserType.getSelectedItem().toString().trim();
 
-				// test
-				try {
-
-					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
-					stat = con.createStatement();
-
-					if (type == "select") {
-						JOptionPane.showMessageDialog(null, "Please choose your type");
-					} else if (type == "Patient") {
-
-						String sql = "Select SIM from patient where name='" + username + "' and password='" + password
-								+ "'";
-						rs = stat.executeQuery(sql);
-						if (rs.next()) {
-							String id = rs.getString("SIM");
-							JOptionPane.showMessageDialog(null, "Welcome to Hospital " + username + " Your ID is : "+id);
-							Pappointment Pa = new Pappointment(id);
-							Pa.main(null);
-							frame.setVisible(false);
-						} else {
-							JOptionPane.showMessageDialog(null, "Username or Password is incorrect");
-							txtPassword.setText(null);
-							txtUsername.setText(null);
-						}
-					} else {
-						String sql = "Select DoctorID from doctor where DName='" + username + "' and DPassword='" + password
-								+ "'";
-						rs = stat.executeQuery(sql);
-						if (rs.next()) {
-							String id = rs.getString("DoctorID");
-							JOptionPane.showMessageDialog(null, "Welcome to Hospital " + username+" Your ID is : "+id);
-
-							//sql ="Select DoctorID from doctor where DName='"+username+"' and DPassword='"+password+"'";
-							//rs = stat.executeQuery(sql);
-							
-							 
-							Dappointment Da = new Dappointment(id);
-							Da.main(null);
-							frame.setVisible(false);
-						} else {
-							JOptionPane.showMessageDialog(null, "Username or Password is incorrect");
-							txtPassword.setText(null);
-							txtUsername.setText(null);
-						}
-					}
-				} catch (Exception e1) {
-					System.out.println(e1);
+				
+				Login login = new Login();
+				int result = login.LoginAct(type, username, password);
+				if(result == -1) {
+					txtPassword.setText(null);
+					txtUsername.setText(null);
 				}
+				else if(result == 1) {
+					Pappointment Pa = new Pappointment(login.getid());
+					Pa.main(null);
+					frame.setVisible(false);
+				}else if(result == 2){
+					Dappointment Da = new Dappointment(login.getid());
+					Da.main(null);
+					frame.setVisible(false);
+				}
+				
 
 			}
 		});
@@ -186,6 +172,7 @@ public class LoginPage {
 				JFrame frmLoginSystem = new JFrame("Exit");
 				if (JOptionPane.showConfirmDialog(frmLoginSystem, "Confirm if you want to exit", "Login Systems",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
+											
 					System.exit(0);
 				}
 			}

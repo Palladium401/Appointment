@@ -114,10 +114,10 @@ public class Sign_up {
 		lblPassword.setBounds(44, 603, 137, 48);
 		frame.getContentPane().add(lblPassword);
 
-		JLabel lblNewLabel = new JLabel("Sign-up");
+		JLabel lblNewLabel = new JLabel("Patient Sign-up");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("ËÎÌו", Font.PLAIN, 30));
-		lblNewLabel.setBounds(278, 33, 185, 60);
+		lblNewLabel.setBounds(278, 33, 279, 60);
 		frame.getContentPane().add(lblNewLabel);
 
 		txtUsername = new JTextField();
@@ -176,8 +176,32 @@ public class Sign_up {
 
 				String password = txtPassword.getText();
 				String passwordconfirm = txtPasswordConfirm.getText();
-
-				if (txtUsername.getText().equals("") || txtBirthday.getText().equals("") || txtSim.getText().equals("")
+				PsignUp psignup = new PsignUp();
+				int result = psignup.signup(txtUsername.getText(), txtBirthday.getText(), txtSim.getText(), txtGender.getText(), txtPhonenumber.getText(), txtAge.getText(), txtPassword.getText(), txtPasswordConfirm.getText());
+				if(result == 1) {
+					LoginPage login = new LoginPage();
+					LoginPage.main(null);
+					frame.setVisible(false);
+					}else {
+						if(result == -2) {
+							txtUsername.setText(null);
+							txtBirthday.setText(null);
+							txtSim.setText(null);
+							txtGender.setText(null);
+							txtPhonenumber.setText(null);
+							txtAge.setText(null);
+							txtPassword.setText(null);
+							txtPasswordConfirm.setText(null);
+							}
+						else {
+							if(result == -3) {
+								txtPassword.setText(null);
+								txtPasswordConfirm.setText(null);
+								}
+							}
+					}
+						
+				/*if (txtUsername.getText().equals("") || txtBirthday.getText().equals("") || txtSim.getText().equals("")
 						|| txtGender.getText().equals("") || txtPhonenumber.getText().equals("")
 						|| txtAge.getText().equals("") || txtPassword.getText().equals("")
 						|| txtPasswordConfirm.getText().equals("")) {
@@ -187,7 +211,7 @@ public class Sign_up {
 					if (password.equals(passwordconfirm)) {
 						try {
 							Class.forName("com.mysql.jdbc.Driver");
-							con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+							con = DBUtil.getConn();
 							pst = con.prepareStatement(
 									"insert into patient(name,birthday,SIM,Gender,Phonenumber,Age,Password) values(?,?,?,?,?,?,?)");
 
@@ -231,7 +255,7 @@ public class Sign_up {
 
 					}
 
-				}
+				}*/
 			}
 		});
 		btnSignUp.setBounds(142, 835, 124, 38);

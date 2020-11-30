@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Dappointment {
 
@@ -39,7 +41,6 @@ public class Dappointment {
 	private JTable FutureAppointment;
 	private JLabel lblFutureappointment;
 	private JTextField Datetext;
-	private JTextField Departmenttext;
 
 	private Connection con = null;
 	private Statement stat = null;
@@ -56,7 +57,6 @@ public class Dappointment {
 	private JButton btndelete;
 	private JButton btnLogOUT;
 	
-
 	/**
 	 * Launch the application.
 	 */
@@ -86,7 +86,7 @@ public class Dappointment {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1000, 846);
+		frame.setBounds(100, 100, 1314, 846);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JLabel lblTitle = new JLabel("Doctor Appointment system");
@@ -109,6 +109,13 @@ public class Dappointment {
 
 		lblFutureappointment = new JLabel("FutureAppointment:");
 		lblFutureappointment.setFont(new Font("BIZ UDPMincho Medium", Font.BOLD, 13));
+		
+		JComboBox Department = new JComboBox();
+		Department.setBounds(149, 323, 128, 21);
+		frame.getContentPane().add(Department);
+		Department.addItem("Internel");
+		Department.addItem("Surgery");
+		Department.addItem("Child");
 
 		JButton btnYourAp = new JButton("Refresh");
 		btnYourAp.addActionListener(new ActionListener() {
@@ -116,9 +123,9 @@ public class Dappointment {
 				try {
 
 					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+					con = DBUtil.getConn();
 					stat = con.createStatement();
-					String query = "Select * from appointment";
+					String query = "Select * from appointment where DoctorID ='"+id+"'";
 					pst = con.prepareStatement(query);
 					rs = pst.executeQuery();
 					table.setModel(DbUtils.resultSetToTableModel(rs));
@@ -134,9 +141,9 @@ public class Dappointment {
 				try {
 
 					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+					con = DBUtil.getConn();
 					stat = con.createStatement();
-					String query = "Select * from appointment where Psin != '-1'";
+					String query = "Select * from appointment where Psin != '-1'and DoctorID ='"+id+"'";
 					pst = con.prepareStatement(query);
 					rs = pst.executeQuery();
 					FutureAppointment.setModel(DbUtils.resultSetToTableModel(rs));
@@ -149,20 +156,29 @@ public class Dappointment {
 		Datetext = new JTextField();
 		Datetext.setColumns(10);
 
-		Departmenttext = new JTextField();
-		Departmenttext.setColumns(10);
-
 		btnAddAppointment = new JButton("Upload");
 		btnAddAppointment.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
+				
+				DaUpload Dupload = new DaUpload();
+				boolean result =Dupload.upload(Datetext.getText(),Department.getSelectedItem().toString().trim(), id);
+				if(result) {
+					JOptionPane.showMessageDialog(null, "                   Successful upload", null,
+							JOptionPane.PLAIN_MESSAGE);
+				}else {
+					Datetext.setText(null);
+					//Departmenttext.setText(null);
+				}
+				
+				/*try {
 					
 					if (Datetext.getText().equals("") ||  Departmenttext.getText().equals("") ) {
 						JOptionPane.showMessageDialog(null, "Please input all the information", "Try it again",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+						Class.forName("com.mysql.jdbc.Driver");
+						con = DBUtil.getConn();
+						stat = con.createStatement();
 					
 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); 
 					  Date bt =sdf.parse(Datetext.getText()); 
@@ -200,7 +216,7 @@ public class Dappointment {
 				} catch (Exception e1) {
 					System.out.println(e1);
 			
-			}}} );
+			}*/}} );
 
 		YourAp = new JScrollPane();
 		
@@ -209,16 +225,23 @@ public class Dappointment {
 		btnupdateap = new JButton("Update");
 		btnupdateap.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				try {
+				DaUpdate Dupload = new DaUpdate();
+				boolean result = Dupload.Update(Datetext.getText(), Department.getSelectedItem().toString().trim(), aid.getText());
+				if(result) {
+					
+				}else {
+					Datetext.setText(null);
+					//Departmenttext.setText(null);
+				}
+				/*try {
 					
 					if (Datetext.getText().equals("") ||  Departmenttext.getText().equals("")||aid.getText().equals("") ) {
 						JOptionPane.showMessageDialog(null, "Please input all the information", "Try it again",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
-					stat = con.createStatement();
+						Class.forName("com.mysql.jdbc.Driver");
+						con = DBUtil.getConn();
+						stat = con.createStatement();
 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); 
 					  Date bt =sdf.parse(Datetext.getText()); 
 					  Date et =sdf.parse(sdf.format(System.currentTimeMillis()));
@@ -260,7 +283,7 @@ public class Dappointment {
 				} catch (Exception e1) {
 					System.out.println(e1);
 			
-			}
+			}*/
 				
 			}
 		});
@@ -274,15 +297,23 @@ public class Dappointment {
 		btndelete = new JButton("Delete");
 		btndelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-try {
+				DaDelete Ddelete = new DaDelete();
+				boolean result = Ddelete.Delete(aid.getText());
+				if(result) {
+					
+				}else {
+					Datetext.setText(null);
+					//Departmenttext.setText(null);	
+				}
+				/*try {
 					
 					if (aid.getText().equals("") ) {
 						JOptionPane.showMessageDialog(null, "Please input Appointment id", "Try it again",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
-					stat = con.createStatement();
+						Class.forName("com.mysql.jdbc.Driver");
+						con = DBUtil.getConn();
+						stat = con.createStatement();
 					  
 					  
 					String sql ="Select * from appointment where Aid = '"+aid.getText() +"' and Psin ='-1'";
@@ -315,7 +346,7 @@ try {
 				} catch (Exception e1) {
 					System.out.println(e1);
 			
-			}
+			}*/
 			}
 		});
 		
@@ -331,6 +362,9 @@ try {
 				}
 			}
 		});
+		
+		
+		
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -344,7 +378,7 @@ try {
 							.addComponent(inputappointmentid)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(aid, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 255, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 569, Short.MAX_VALUE)
 							.addComponent(btnYourAp, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -355,7 +389,7 @@ try {
 											.addGroup(groupLayout.createSequentialGroup()
 												.addComponent(lblDepartment, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
 												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(Departmenttext, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE))
+												.addComponent(Department, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE))
 											.addGroup(groupLayout.createSequentialGroup()
 												.addComponent(lblDate, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
 												.addPreferredGap(ComponentPlacement.RELATED)
@@ -371,23 +405,23 @@ try {
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(lblFutureappointment, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addPreferredGap(ComponentPlacement.RELATED, 279, Short.MAX_VALUE)
 									.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED, 69, Short.MAX_VALUE))
-								.addComponent(FutureAp, GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))))
+									.addPreferredGap(ComponentPlacement.RELATED, 344, Short.MAX_VALUE))
+								.addComponent(FutureAp, GroupLayout.DEFAULT_SIZE, 868, Short.MAX_VALUE))))
 					.addGap(37))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(YourAp, GroupLayout.DEFAULT_SIZE, 966, Short.MAX_VALUE)
+					.addComponent(YourAp, GroupLayout.DEFAULT_SIZE, 1280, Short.MAX_VALUE)
 					.addContainerGap())
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(btnLogOUT, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(854, Short.MAX_VALUE))
+					.addContainerGap(1168, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(201)
 					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 546, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(239, Short.MAX_VALUE))
+					.addContainerGap(553, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -410,8 +444,8 @@ try {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(lblDepartment, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(Departmenttext, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(Department, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(btnAddAppointment)
 								.addComponent(btndelete)

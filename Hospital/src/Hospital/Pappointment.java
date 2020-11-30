@@ -96,7 +96,7 @@ public class Pappointment {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 927, 871);
+		frame.setBounds(100, 100, 1126, 871);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JLabel lbltitle = new JLabel("Patient Appointment Page");
@@ -126,14 +126,25 @@ public class Pappointment {
 		button = new JButton("Make an appointment");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (aid.getText().equals("")) {
+				
+				Pmake pmake =new Pmake();
+				boolean result =pmake.Make_Appointment(aid.getText(), textsin.getText());
+				if(result) {
+					JOptionPane.showMessageDialog(null, "                   Successful Booked", null,
+							JOptionPane.PLAIN_MESSAGE);
+				}else {
+					
+				}
+				
+				/*if (aid.getText().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please input a Appointment id to make an appointment", "Try it again",
 							JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					try {
 						Class.forName("com.mysql.jdbc.Driver");
-						con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+						con = DBUtil.getConn();
+						stat = con.createStatement();
 						
 						pst = con.prepareStatement(
 								"Select * from appointment where Aid = '"+aid.getText() +"'");
@@ -165,7 +176,7 @@ public class Pappointment {
 						System.out.println(e1);
 					}
 					
-				}
+				}*/
 			}
 		});
 
@@ -175,7 +186,7 @@ public class Pappointment {
 				try {
 
 					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+					con = DBUtil.getConn();
 					stat = con.createStatement();
 					String query = "Select * from appointment where Psin = '-1'";
 					pst = con.prepareStatement(query);
@@ -194,7 +205,7 @@ public class Pappointment {
 				try {
 
 					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+					con = DBUtil.getConn();
 					stat = con.createStatement();
 					String query = "Select * from appointment where Psin ='" + id + "'";
 					pst = con.prepareStatement(query);
@@ -212,8 +223,19 @@ public class Pappointment {
 		btnInfoUpdate = new JButton("UpdateInfo");
 		btnInfoUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				if (textname.getText().equals("") ||  textgender.getText().equals("") || textphonenumber.getText().equals("")
+				Pupdateinfo pupdateinfo = new Pupdateinfo();
+				boolean result = pupdateinfo.updateinfo(textname.getText(), textgender.getText(), textphonenumber.getText(), textage.getText(), textsin.getText());
+				if(result) {
+					textname.setText(textname.getText());
+					textgender.setText(textgender.getText());
+					textphonenumber.setText(textphonenumber.getText());
+					textage.setText(textage.getText());
+					textsin.setText(textsin.getText());
+				}else {
+					
+				}
+				
+				/*if (textname.getText().equals("") ||  textgender.getText().equals("") || textphonenumber.getText().equals("")
 						|| textage.getText().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please input all the information", "Try it again",
 							JOptionPane.ERROR_MESSAGE);
@@ -221,7 +243,8 @@ public class Pappointment {
 					
 						try {
 							Class.forName("com.mysql.jdbc.Driver");
-							con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+							con = DBUtil.getConn();
+							stat = con.createStatement();
 							pst = con.prepareStatement(
 									"UPDATE patient SET name='" + textname.getText() + "', Gender='" + textgender.getText() + "', Phonenumber='" + textphonenumber.getText() + "', Age='" + textage.getText() + "' where SIM = '"+textsin.getText() +"'");
 
@@ -243,16 +266,16 @@ public class Pappointment {
 							System.out.println(e1);
 						}
 			
-		}}});
+		}*/}});
 
 		lblSin = new JLabel("SIN:");
 		lblSin.setFont(new Font("BIZ UDPMincho Medium", Font.BOLD, 12));
 
 		try {
 
-		Class.forName("com.mysql.jdbc.Driver");
-		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
-		stat = con.createStatement();
+			Class.forName("com.mysql.jdbc.Driver");
+			con = DBUtil.getConn();
+			stat = con.createStatement();
 		
 		String query = "Select * from patient where SIM = '" + id + "'";
 		pst = con.prepareStatement(query);
@@ -288,14 +311,18 @@ public class Pappointment {
 		JButton btnCancelap = new JButton("CancelAppointment");
 		btnCancelap.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (aid.getText().equals("")) {
+				Pcancel pcancel = new Pcancel();
+				boolean result = pcancel.cancel(aid.getText(), textsin.getText());
+				
+				/*if (aid.getText().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please input a Appointment id to make an appointment", "Try it again",
 							JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					try {
 						Class.forName("com.mysql.jdbc.Driver");
-						con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital", "root", "root");
+						con = DBUtil.getConn();
+						stat = con.createStatement();
 						
 						pst = con.prepareStatement(
 								"Select * from appointment where Aid = '"+aid.getText() +"' and Psin ='"+textsin.getText()+"'");
@@ -327,7 +354,7 @@ public class Pappointment {
 						System.out.println(e1);
 					}
 					
-				}
+				}*/
 			}
 		});
 		
@@ -411,17 +438,17 @@ public class Pappointment {
 												.addGap(104)
 												.addComponent(btnNewButton)
 												.addGap(13)))
-										.addComponent(FutureAp, GroupLayout.PREFERRED_SIZE, 395, GroupLayout.PREFERRED_SIZE))))
-							.addGap(296)))
+										.addComponent(FutureAp, GroupLayout.PREFERRED_SIZE, 563, GroupLayout.PREFERRED_SIZE))))
+							.addGap(128)))
 					.addGap(93))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(AvliableAp, GroupLayout.PREFERRED_SIZE, 852, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(414, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(331)
 					.addComponent(lbltitle, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(719, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(AvliableAp, GroupLayout.PREFERRED_SIZE, 1084, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(202, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -438,10 +465,9 @@ public class Pappointment {
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(lblFutureAppointment, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
 							.addComponent(btnUpdate)))
-					.addGap(22)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(18)
+							.addGap(40)
 							.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 9, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -469,9 +495,12 @@ public class Pappointment {
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(button)
 								.addComponent(btnCancelap)
-								.addComponent(btnLogout)))
-						.addComponent(FutureAp, GroupLayout.PREFERRED_SIZE, 354, GroupLayout.PREFERRED_SIZE))
-					.addGap(24)
+								.addComponent(btnLogout))
+							.addGap(24))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(22)
+							.addComponent(FutureAp, GroupLayout.PREFERRED_SIZE, 354, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)))
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblAvaliable, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnNewButton)
